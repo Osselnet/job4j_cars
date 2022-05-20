@@ -13,8 +13,14 @@ public class Car {
     private int id;
     private String name;
     @ManyToOne
-    @JoinColumn(name = "engine_id", foreignKey = @ForeignKey(name = "ENGINE_ID_FK"))
+    @JoinColumn(name = "engine_id", foreignKey = @ForeignKey(name = "ENGINE_ID_FK"), nullable = false, updatable = false)
     private Engine engine;
+    @ManyToOne
+    @JoinColumn(name = "brand_id", foreignKey = @ForeignKey(name = "BRAND_ID_FK"), nullable = false, updatable = false)
+    private Brand brand;
+    @ManyToOne
+    @JoinColumn(name = "body_id", foreignKey = @ForeignKey(name = "BODY_ID_FK"), nullable = false, updatable = false)
+    private Body body;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "history_owner", joinColumns = {
             @JoinColumn(name = "driver_id", nullable = false, updatable = false)},
@@ -25,9 +31,13 @@ public class Car {
     public Car() {
     }
 
-    public static Car of(String name) {
+    public static Car of(String name, Engine engine, Brand brand, Body body, Set<Driver> drivers) {
         Car car = new Car();
         car.setName(name);
+        car.setEngine(engine);
+        car.setBrand(brand);
+        car.setBody(body);
+        car.setDrivers(drivers);
         return car;
     }
 
@@ -67,6 +77,22 @@ public class Car {
         this.drivers = drivers;
     }
 
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
+    }
+
+    public Body getBody() {
+        return body;
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -90,6 +116,8 @@ public class Car {
                 + "id=" + id
                 + ", name='" + name + '\''
                 + ", engine=" + engine
+                + ", brand=" + brand
+                + ", body=" + body
                 + ", drivers=" + drivers
                 + '}';
     }
